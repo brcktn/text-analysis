@@ -55,3 +55,55 @@ def phrase_frequency_list(sentences: list[list[str]], phrase_len: int) -> list[t
                 phrase_freq[phrase] = 1
 
     return sorted(phrase_freq.items(), key=lambda x: x[1], reverse=True)
+
+
+def next_word_probabilities(sentences: list[list[str]], word: str) -> list[tuple[str, float]]:
+    """
+    Calculate the probabilities of the next word given a word in a list of sentences.
+
+    Args:
+        sentences (list[list[str]]): A list of lists, where each inner list contains strings.
+        word (str): The word to calculate the next word probabilities for.
+
+    Returns:
+        list[tuple(str, float)]: A list of tuples, where each tuple contains a word and its probability.
+    """
+    
+    next_word_freq = {}
+    total_count = 0
+    
+    for sentence in sentences:
+        for i in range(len(sentence) - 1):
+            if sentence[i] == word:
+                next_word = sentence[i + 1]
+                if next_word in next_word_freq:
+                    next_word_freq[next_word] += 1
+                else:
+                    next_word_freq[next_word] = 1
+                total_count += 1
+
+    return sorted([(word, count / total_count) for word, count in next_word_freq.items()], key=lambda x: x[1], reverse=True)
+
+
+def word_frequency_given_word(sentences: list[list[str]], word: str) -> list[tuple[str, int]]:
+    """
+    Count the frequency of words only in sentences that contain a specific word.
+
+    Args:
+        sentences (list[list[str]]): A list of lists, where each inner list contains strings.
+        word (str): The word to filter sentences by.
+    Returns:
+        list[tuple(str, int)]: A list of tuples, where each tuple contains a word and its frequency.
+    """
+
+    word_freq = {}
+    
+    for sentence in sentences:
+        if word in sentence:
+            for w in sentence:
+                if w in word_freq:
+                    word_freq[w] += 1
+                else:
+                    word_freq[w] = 1
+
+    return sorted(word_freq.items(), key=lambda x: x[1], reverse=True)
